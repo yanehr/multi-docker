@@ -3,7 +3,7 @@
   "containerDefinitions": [
     {
       "name": "client",
-      "image": "yanehr/multi-clients",
+      "image": "yanehr/multi-client",
       "hostname": "client",
       "essential": true,
       "memory": 128
