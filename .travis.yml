@@ -1,4 +1,6 @@
 sudo: required
+language: generic
+
 services:
   - docker
 
@@ -6,7 +8,7 @@ before_install:
   - docker build -t yanehr/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run -e CI=true yanehr/react-test npm test
+  - docker run yanehr/react-test npm test -- --coverage
 
 after_success:
   - docker build -t yanehr/multi-client ./client
@@ -14,7 +16,7 @@ after_success:
   - docker build -t yanehr/multi-server ./server
   - docker build -t yanehr/multi-worker ./worker
   #Log in to the docker CLI
-  - echo $DOCKER_PASSWORD | docker login -u "$DOCKER_ID" --password-stdin
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
   #Take those images and push them to docker hub
   - docker push yanehr/multi-client
   - docker push yanehr/multi-nginx
@@ -23,11 +25,11 @@ after_success:
 
 deploy:
   provider: elasticbeanstalk
-  region: us-east-1
-  app: multi-docker
-  env: MultiDocker-env-1
-  bucket_name: elasticbeanstalk-us-east-1-145297159204
-  bucket_path: docker-multi
+  region: 'us-east-1'
+  app: 'multi-docker'
+  env: 'MultiDocker-env-1'
+  bucket_name: 'elasticbeanstalk-us-east-1-145297159204'
+  bucket_path: 'docker-multi'
   on:
     branch: master
   access_key_id: $AWS_ACCESS_KEY
